@@ -1,6 +1,6 @@
 import Foundation
 
-enum LogLevel: Int {
+public enum LogLevel: Int {
     case verbose = -1
     case debug = 0
     case info = 1
@@ -29,18 +29,18 @@ enum LogLevel: Int {
     }
 }
 
-protocol Logger {
+public protocol Logger {
     func log(level: LogLevel, message: Data)
     func log(level: LogLevel, message: String)
 }
 
 
-class FileLogger: Logger {
+public class FileLogger: Logger {
     var handle: FileHandle
     var dateFormatter: DateFormatter
     var level: LogLevel = .info
 
-    init(path: URL, fileName: String) throws {
+    public init(path: URL, fileName: String) throws {
         let filePath = path.appending(path: fileName)
         if !FileManager.default.fileExists(atPath: path.relativeString) {
             try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true)
@@ -59,7 +59,7 @@ class FileLogger: Logger {
         self.handle.closeFile()
     }
 
-    func log(level: LogLevel, message: Data) {
+    public func log(level: LogLevel, message: Data) {
         if level.rawValue >= self.level.rawValue {
             handle.seekToEndOfFile()
             handle.write("\(self.dateFormatter.string(from: Date())) \t\(level.label) \t".data(using: .utf8)!)
@@ -68,7 +68,7 @@ class FileLogger: Logger {
         }
     }
 
-    func log(level: LogLevel, message: String) {
+    public func log(level: LogLevel, message: String) {
         log(level: level, message: message.data(using: .utf8)!)
     }
 }
